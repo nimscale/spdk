@@ -1,14 +1,6 @@
 
 #stand alone building of spdk, dpdk
 
-
-# Start nimble section
-
-version = "1.0"
-author = "Nimscale"
-description = "spdk bind for Nim."
-license = "Apache Licence 2.0"
-
 # End nimble section
 import ospaths
 import strutils
