@@ -30,7 +30,7 @@ withDir dirName:
   exec "wget http://fast.dpdk.org/rel/dpdk-16.07.tar.xz"
   exec "tar xf dpdk-16.07.tar.xz"
   withDir "dpdk-16.07":
-    exec "make install T=x86_64-native-linuxapp-gcc DESTDIR=."
+    exec "make install T=x86_64-native-linuxapp-gcc DESTDIR=.  EXTRA_CFLAGS=\"-g -O0\""
   #    exec "make config T=x86_64-native-linuxapp-gcc DESTDIR=."
   #    exec "make"
   exec "make DPDK_DIR=./dpdk-16.07/x86_64-native-linuxapp-gcc"
