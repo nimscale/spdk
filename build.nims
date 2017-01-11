@@ -36,4 +36,3 @@ withDir dirName:
   exec "make DPDK_DIR=./dpdk-16.07/x86_64-native-linuxapp-gcc"
   #  exec "make DPDK_DIR=" & thisDir() & "/dpdk-16.07/x86_64-native-linuxapp-gcc"
   echo "SPDK instalation in the system."
-  exec "sudo scripts/setup.sh"
