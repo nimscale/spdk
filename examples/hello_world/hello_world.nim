@@ -45,16 +45,6 @@ import
   system, typeinfo,
   ../../api/nvme, ../../api/pci, ../../api/nvme_spec
 
-#[
-import
-  ../../api/bdev, ../../api/conf, ../../api/copy_engine, ../../api/file,
-  ../../api/ioat, ../../api/ioat_spec, ../../api/json, ../../api/iscsi_spec,
-  ../../api/jsonrpc, ../../api/log, ../../api/net,
-  ../../api/vtophys.nim, ../../api/trace, ../../api/string, ../../api/scsi, ../../api/rpc,
-  ../../api/pci_ids, ../../api/nvmf_spec, ../../api/nvme_intel
-
-]#
-
 #import
 #  ../../api/mmio
 
@@ -82,15 +72,6 @@ proc rte_eal_init(argc : cint; argv : cstringArray) : cint {.cdecl, importc: "rt
 proc rte_mempool_create(name: cstring; n: uint; elt_size: csize; cache_size: uint; private_data_size: uint;
                         mp_init : ptr rte_mempool_ctor_t; mp_init_arg: pointer; obj_init: ptr rte_mempool_obj_cb_t; obj_init_arg: pointer;
                         socket_id: int, lags: uint): ptr rte_mempool {.cdecl, importc: "rte_mempool_create", dynlib: libspdk.}
-#[
-struct rte_mempool *
-rte_mempool_create(const char *name, unsigned n, unsigned elt_size,
-		   unsigned cache_size, unsigned private_data_size,
-		   rte_mempool_ctor_t *mp_init, void *mp_init_arg,
-		   rte_mempool_obj_cb_t *obj_init, void *obj_init_arg,
-		   int socket_id, unsigned flags);
-
-]#
 
 type
   ctrlr_entry* = object
@@ -147,20 +128,27 @@ type
 
 proc read_complete*(arg: pointer; completion: ptr spdk_nvme_cpl) {.cdecl.} =
   var sequence: ptr hello_world_sequence
+
+  sequence = cast[ptr hello_world_sequence](arg)
+
   ##
   ##  The read I/O has completed.  Print the contents of the
   ##   buffer, free the buffer, then mark the sequence as
   ##   completed.  This will trigger the hello_world() function
   ##   to exit its polling loop.
   ##
-  printf("%s", sequence.buf)
+  printf("\n\n  %s  \n\n", sequence.buf)
   rte_free(sequence.buf)
   sequence.is_completed = 1
 
 proc write_complete*(arg: pointer; completion: ptr spdk_nvme_cpl) {.cdecl.} =
   var sequence: ptr hello_world_sequence
-  var ns_entry: ptr ns_entry
+  var ns_entryLoc: ptr ns_entry
   var rc: cint
+
+  sequence = cast[ptr hello_world_sequence](arg)
+  ns_entryLoc = sequence.ns_entry
+
   ##
   ##  The write I/O has completed.  Free the buffer associated with
   ##   the write I/O and allocate a new zeroed buffer for reading
@@ -168,9 +156,14 @@ proc write_complete*(arg: pointer; completion: ptr spdk_nvme_cpl) {.cdecl.} =
   ##
   rte_free(sequence.buf)
   sequence.buf = cast[cstring](rte_zmalloc(nil, 0x00001000, 0x00001000))
-  rc = spdk_nvme_ns_cmd_read(ns_entry.ns, ns_entry.qpair, sequence.buf, 0, ##  LBA start
-                           1, ##  number of LBAs
-                           read_complete, cast[pointer](sequence), 0)
+  rc = spdk_nvme_ns_cmd_read(ns_entryLoc.ns,
+                             ns_entryLoc.qpair,
+                             sequence.buf,
+                             0, ##  LBA start
+                             1, ##  number of LBAs
+                             read_complete,
+                             cast[pointer](sequence),
+                             0)
   if rc != 0:
     printf("starting read I/O failed\x0A")
     exit(1)
@@ -180,7 +173,9 @@ proc hello_world*() {.cdecl.} =
   var sequence: hello_world_sequence
   var rc: cint
   var numb: int32   # this is mostly used to discard NIM compilation issues
+
   ns_entry = g_namespaces
+
   while ns_entry != nil:
     ##
     ##  Allocate an I/O qpair that we can use to submit read/write requests
@@ -198,15 +193,18 @@ proc hello_world*() {.cdecl.} =
     if ns_entry.qpair == nil:
       printf("ERROR: spdk_nvme_ctrlr_alloc_io_qpair() failed\x0A")
       return
+
     sequence.buf = cast[cstring](rte_zmalloc(nil, 0x00001000, 0x00001000))
     sequence.is_completed = 0
     sequence.ns_entry = ns_entry
+
     ##
     ##  Print "Hello world!" to sequence.buf.  We will write this data to LBA
     ##   0 on the namespace, and then later read it back into a separate buffer
     ##   to demonstrate the full I/O path.
     ##
-    let offs = snprintf(sequence.buf, sizeof(sequence.buf), "Hello world!\x0A")
+    let offs = snprintf(sequence.buf, 0x00001000, "\n\n Hello world!\x0A\n\n")
+
     ##
     ##  Write the data buffer to LBA 0 of this namespace.  "write_complete" and
     ##   "&sequence" are specified as the completion callback function and
@@ -227,8 +225,23 @@ proc hello_world*() {.cdecl.} =
     if rc != 0:
       printf("starting write I/O failed\x0A")
       exit(1)
-    while not cast[bool](sequence.is_completed):
+
+    ##
+    ## Poll for completions.  0 here means process all available completions
+    ##  In certain usage models, the caller may specify a positive integer
+    ##  instead of 0 to signify the maximum number of completions it should
+    ##  process.  This function will never block - if there are no
+    ##  completions pending on the specified qpair, it will return immediately.
+    ##
+    ## When the write I/O completes, write_complete() will submit a new I/O
+    ##  to read LBA 0 into a separate buffer, specifying read_complete() as its
+    ##  completion routine.  When the read I/O completes, read_complete() will
+    ##  print the buffer contents and set sequence.is_completed = 1.  That will
+    ##  break this loop and then exit the program.
+    while 0 == sequence.is_completed:
       numb = spdk_nvme_qpair_process_completions(ns_entry.qpair, 0)
+
+
     ##
     ##  Free the I/O qpair.  This typically is done when an application exits.
     ##   But SPDK does support freeing and then reallocating qpairs during
@@ -237,6 +250,7 @@ proc hello_world*() {.cdecl.} =
     ##
     numb = spdk_nvme_ctrlr_free_io_qpair(ns_entry.qpair)
     ns_entry = ns_entry.next
+
 
 proc probe_cb*(cb_ctx: pointer; dev: ptr spdk_pci_device;
               opts: ptr spdk_nvme_ctrlr_opts): bool {.cdecl.} =
@@ -264,6 +278,9 @@ proc attach_cb*(cb_ctx: pointer; dev: ptr spdk_pci_device; ctrlr: ptr spdk_nvme_
     num_ns: uint32
   var entry: ptr ctrlr_entry
   var cdata: ptr spdk_nvme_ctrlr_data
+
+  cdata = spdk_nvme_ctrlr_get_data(ctrlr)
+
   entry = cast[ptr ctrlr_entry](allocShared(sizeof(ctrlr_entry)))
   if entry == nil:
     printf("ctrlr_entry allocShared")
@@ -271,8 +288,7 @@ proc attach_cb*(cb_ctx: pointer; dev: ptr spdk_pci_device; ctrlr: ptr spdk_nvme_
   printf("Attached to %04x:%02x:%02x.%02x\x0A", spdk_pci_device_get_domain(dev),
          spdk_pci_device_get_bus(dev), spdk_pci_device_get_dev(dev),
          spdk_pci_device_get_func(dev))
-  var offs : cint = snprintf(entry.name, sizeof((entry.name)), "%-20.20s (%-20.20s)", cdata.mn,
-           cdata.sn)
+  var offs : cint = snprintf(entry.name, sizeof((entry.name)), "%-20.20s (%-20.20s)", cdata.mn, cdata.sn)
   entry.ctrlr = ctrlr
   entry.next = g_controllers
   g_controllers = entry
@@ -295,6 +311,10 @@ proc cleanup*() {.cdecl.} =
   var ret : cint
   var ns_entry: ptr ns_entry
   var ctrlr_entry: ptr ctrlr_entry
+
+  ns_entry = g_namespaces
+  ctrlr_entry = g_controllers
+
   while cast[bool](ns_entry):
     var next: ptr ns_entry
     deallocShared(ns_entry)
@@ -305,9 +325,10 @@ proc cleanup*() {.cdecl.} =
     deallocShared(ctrlr_entry)
     ctrlr_entry = next
 
-var ealargs : array[0..2, cstring] = [cstring("hello_world"),
+var ealargs : array[0..3, cstring] = [cstring("hello_world"),
                                       cstring("-c 0x1"),
-                                      cstring("-n 4"), ]
+                                      cstring("-n 4"),
+                                      cstring("--proc-type=auto"), ]
 
 #proc main*(argc: cint; argv: cstringArray): cint {.cdecl.} =
 proc main*() {.cdecl.} =
@@ -345,7 +366,6 @@ proc main*() {.cdecl.} =
     printf("spdk_nvme_probe() failed\x0A")
     cleanup()
     exit 1
-  printf("Initialization complete.\x0A")
   echo "Initialization complete.\x0A"
   hello_world()
   cleanup()
