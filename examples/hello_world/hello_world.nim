@@ -63,15 +63,15 @@ proc printf(formatstr: cstring)
   {.header: "<stdio.h>", varargs.}
 proc exit(exitCode: int32)
   {.header: "<stdlib.h>", varargs.}
-proc snprintf(buf:cstring; size: csize; frmt: cstring) : cint {.cdecl, header: "<stdio.h>", importc: "snprintf", varargs.}
+proc snprintf(buf:cstring; size: csize; frmt: cstring) : cint {.header: "<stdio.h>", importc: "snprintf", varargs.}
 
 ##DPDK dependencies
-proc rte_free(cptr : pointer) {.cdecl, importc: "rte_free", dynlib: libspdk.}
-proc rte_zmalloc (typePrt: cstring; size: uint64; align : uint) : pointer {.cdecl, importc: "rte_zmalloc", dynlib: libspdk.}
-proc rte_eal_init(argc : cint; argv : cstringArray) : cint {.cdecl, importc: "rte_eal_init", dynlib: libspdk.}
+proc rte_free(cptr : pointer) {.importc: "rte_free", dynlib: libspdk.}
+proc rte_zmalloc (typePrt: cstring; size: uint64; align : uint) : pointer {.importc: "rte_zmalloc", dynlib: libspdk.}
+proc rte_eal_init(argc : cint; argv : cstringArray) : cint {.importc: "rte_eal_init", dynlib: libspdk.}
 proc rte_mempool_create(name: cstring; n: uint; elt_size: csize; cache_size: uint; private_data_size: uint;
                         mp_init : ptr rte_mempool_ctor_t; mp_init_arg: pointer; obj_init: ptr rte_mempool_obj_cb_t; obj_init_arg: pointer;
-                        socket_id: int, lags: uint): ptr rte_mempool {.cdecl, importc: "rte_mempool_create", dynlib: libspdk.}
+                        socket_id: int, lags: uint): ptr rte_mempool {.importc: "rte_mempool_create", dynlib: libspdk.}
 
 type
   ctrlr_entry* = object
@@ -92,7 +92,7 @@ var g_controllers* {.exportc: "g_controllers"}: ptr ctrlr_entry
 
 var g_namespaces* {.exportc: "g_namespaces"}: ptr ns_entry
 
-proc register_ns*(ctrlr: ptr spdk_nvme_ctrlr; ns: ptr spdk_nvme_ns) {.cdecl.} =
+proc register_ns*(ctrlr: ptr spdk_nvme_ctrlr; ns: ptr spdk_nvme_ns) =
   var entry: ptr ns_entry
   var cdata: ptr spdk_nvme_ctrlr_data
   ##
@@ -168,7 +168,7 @@ proc write_complete*(arg: pointer; completion: ptr spdk_nvme_cpl) {.cdecl.} =
     printf("starting read I/O failed\x0A")
     exit(1)
 
-proc hello_world*() {.cdecl.} =
+proc hello_world*() =
   var ns_entry: ptr ns_entry
   var sequence: hello_world_sequence
   var rc: cint
@@ -307,7 +307,7 @@ proc attach_cb*(cb_ctx: pointer; dev: ptr spdk_pci_device; ctrlr: ptr spdk_nvme_
     register_ns(ctrlr, spdk_nvme_ctrlr_get_ns(ctrlr, nsid))
     inc(nsid)
 
-proc cleanup*() {.cdecl.} =
+proc cleanup*() =
   var ret : cint
   var ns_entry: ptr ns_entry
   var ctrlr_entry: ptr ctrlr_entry
@@ -330,8 +330,7 @@ var ealargs : array[0..3, cstring] = [cstring("hello_world"),
                                       cstring("-n 4"),
                                       cstring("--proc-type=auto"), ]
 
-#proc main*(argc: cint; argv: cstringArray): cint {.cdecl.} =
-proc main*() {.cdecl.} =
+proc main*() =
   var rc: cint
   ##
   ##  By default, the SPDK NVMe driver uses DPDK for huge page-based
