@@ -50,6 +50,11 @@ Initialization complete.
   Hello world!
 
 ```
+# Documentation:
 
+ General library documentation: [SPDK Doc](http://www.spdk.io/doc/)
+ API reference: [TBD]
+ 
+ 
  </br>
 > <h3>Note! Test envoronment is based on Ubuntu 16.04.</h3></br>
