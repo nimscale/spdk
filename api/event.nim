@@ -83,12 +83,11 @@ const
   SPDK_APP_DEFAULT_LOG_FACILITY* = "local7"
   SPDK_APP_DEFAULT_LOG_PRIORITY* = "info"
 
-## *
-##  \brief An event is a function that is passed to and called on an lcore.
-##
-
 type
   spdk_event_t* = ptr spdk_event
+    ## *
+    ##  \brief An event is a function that is passed to and called on an lcore.
+    ##
   spdk_event_fn* = proc (a2: spdk_event_t) {.cdecl.}
   spdk_event* = object
     lcore*: uint32
@@ -100,16 +99,15 @@ type
 
   spdk_poller_fn* = proc (arg: pointer) {.cdecl.}
 
-## *
-##  \brief A poller is a function that is repeatedly called on an lcore.
-##
-
 type
   INNER_C_STRUCT_923598915* = object
     tqe_next*: ptr spdk_poller  ##  next element
     tqe_prev*: ptr ptr spdk_poller ##  address of previous next element
 
   spdk_poller* = object
+    ## *
+    ##  \brief A poller is a function that is repeatedly called on an lcore.
+    ##
     tailq*: INNER_C_STRUCT_923598915 ## 	TAILQ_ENTRY(spdk_poller)	tailq;
     lcore*: uint32
     period_ticks*: uint64
@@ -126,12 +124,11 @@ const
   SPDK_APP_DPDK_DEFAULT_MEM_CHANNEL* = 4
   SPDK_APP_DPDK_DEFAULT_CORE_MASK* = "0x1"
 
-## *
-##  \brief Event framework initialization options
-##
-
 type
   spdk_app_opts* = object
+    ## *
+    ##  \brief Event framework initialization options
+    ##
     name*: cstring
     config_file*: cstring
     reactor_mask*: cstring
@@ -146,92 +143,92 @@ type
     dpdk_mem_size*: cint
 
 
-## *
-##  \brief Initialize the default value of opts
-##
-
 proc spdk_app_opts_init*(opts: ptr spdk_app_opts) {.cdecl,
     importc: "spdk_app_opts_init", dynlib: libspdk.}
-## *
-##  \brief Initialize DPDK via opts.
-##
+    ## *
+    ##  \brief Initialize the default value of opts
+    ##
 
 proc spdk_dpdk_framework_init*(opts: ptr spdk_app_opts) {.cdecl,
     importc: "spdk_dpdk_framework_init", dynlib: libspdk.}
-## *
-##  \brief Initialize an application to use the event framework. This must be called prior to using
-##  any other functions in this library.
-##
+    ## *
+    ##  \brief Initialize DPDK via opts.
+    ##
 
 proc spdk_app_init*(opts: ptr spdk_app_opts) {.cdecl, importc: "spdk_app_init",
     dynlib: libspdk.}
-## *
-##  \brief Perform final shutdown operations on an application using the event framework.
-##
+    ## *
+    ##  \brief Initialize an application to use the event framework. This must be called prior to using
+    ##  any other functions in this library.
+    ##
 
 proc spdk_app_fini*() {.cdecl, importc: "spdk_app_fini", dynlib: libspdk.}
-## *
-##  \brief Start the framework. Once started, the framework will call start_fn on the master
-##  core with the arguments provided. This call will block until \ref spdk_app_stop is called.
-##
+    ## *
+    ##  \brief Perform final shutdown operations on an application using the event framework.
+    ##
 
 proc spdk_app_start*(start_fn: spdk_event_fn; arg1: pointer; arg2: pointer): cint {.
     cdecl, importc: "spdk_app_start", dynlib: libspdk.}
-## *
-##  \brief Stop the framework. This does not wait for all threads to exit. Instead, it kicks off
-##  the shutdown process and returns. Once the shutdown process is complete, \ref spdk_app_start will return.
-##
+    ## *
+    ##  \brief Start the framework. Once started, the framework will call start_fn on the master
+    ##  core with the arguments provided. This call will block until \ref spdk_app_stop is called.
+    ##
 
 proc spdk_app_stop*(rc: cint) {.cdecl, importc: "spdk_app_stop", dynlib: libspdk.}
-## *
-##  \brief Generate a configuration file that corresponds to the current running state.
-##
+    ## *
+    ##  \brief Stop the framework. This does not wait for all threads to exit. Instead, it kicks off
+    ##  the shutdown process and returns. Once the shutdown process is complete, \ref spdk_app_start will return.
+    ##
 
 proc spdk_app_get_running_config*(config_str: cstringArray; name: cstring): cint {.
     cdecl, importc: "spdk_app_get_running_config", dynlib: libspdk.}
-## *
-##  \brief Return the instance id for this application.
-##
+    ## *
+    ##  \brief Generate a configuration file that corresponds to the current running state.
+    ##
 
 proc spdk_app_get_instance_id*(): cint {.cdecl, importc: "spdk_app_get_instance_id",
                                       dynlib: libspdk.}
-## *
-##  \brief Convert a string containing a CPU core mask into a bitmask
-##
+    ## *
+    ##  \brief Return the instance id for this application.
+    ##
 
 proc spdk_app_parse_core_mask*(mask: cstring; cpumask: ptr uint64): cint {.cdecl,
     importc: "spdk_app_parse_core_mask", dynlib: libspdk.}
-## *
-##  \brief Return a mask of the CPU cores active for this application
-##
+    ## *
+    ##  \brief Convert a string containing a CPU core mask into a bitmask
+    ##
 
 proc spdk_app_get_core_mask*(): uint64 {.cdecl, importc: "spdk_app_get_core_mask",
                                       dynlib: libspdk.}
-## *
-##  \brief Return the number of CPU cores utilized by this application
-##
+    ## *
+    ##  \brief Return a mask of the CPU cores active for this application
+    ##
 
 proc spdk_app_get_core_count*(): cint {.cdecl, importc: "spdk_app_get_core_count",
                                      dynlib: libspdk.}
-## *
-##  \brief Return the lcore of the current thread.
-##
+    ## *
+    ##  \brief Return the number of CPU cores utilized by this application
+    ##
 
 proc spdk_app_get_current_core*(): uint32 {.cdecl,
     importc: "spdk_app_get_current_core", dynlib: libspdk.}
-## *
-##  \brief Allocate an event to be passed to \ref spdk_event_call
-##
+    ## *
+    ##  \brief Return the lcore of the current thread.
+    ##
 
 proc spdk_event_allocate*(lcore: uint32; fn: spdk_event_fn; arg1: pointer;
                          arg2: pointer; next: spdk_event_t): spdk_event_t {.cdecl,
     importc: "spdk_event_allocate", dynlib: libspdk.}
-## *
-##  \brief Pass the given event to the associated lcore and call the function.
-##
+    ## *
+    ##  \brief Allocate an event to be passed to \ref spdk_event_call
+    ##
 
 proc spdk_event_call*(event: spdk_event_t) {.cdecl, importc: "spdk_event_call",
     dynlib: libspdk.}
+    ## *
+    ##  \brief Pass the given event to the associated lcore and call the function.
+    ##
+
 template spdk_event_get_next*(event: untyped): untyped =
   (event).next
 
@@ -245,26 +242,28 @@ template spdk_event_get_arg2*(event: untyped): untyped =
 
 proc spdk_event_queue_run_all*(lcore: uint32) {.cdecl,
     importc: "spdk_event_queue_run_all", dynlib: libspdk.}
-## *
-##  \brief Register a poller on the given lcore.
-##
 
 proc spdk_poller_register*(poller: ptr spdk_poller; lcore: uint32;
                           complete: ptr spdk_event; period_microseconds: uint64) {.
     cdecl, importc: "spdk_poller_register", dynlib: libspdk.}
-## *
-##  \brief Unregister a poller on the given lcore.
-##
+    ## *
+    ##  \brief Register a poller on the given lcore.
+    ##
 
 proc spdk_poller_unregister*(poller: ptr spdk_poller; complete: ptr spdk_event) {.
     cdecl, importc: "spdk_poller_unregister", dynlib: libspdk.}
-## *
-##  \brief Move a poller from its current lcore to a new lcore.
-##
+    ## *
+    ##  \brief Unregister a poller on the given lcore.
+    ##
 
 proc spdk_poller_migrate*(poller: ptr spdk_poller; new_lcore: cint;
                          complete: ptr spdk_event) {.cdecl,
     importc: "spdk_poller_migrate", dynlib: libspdk.}
+    ## *
+    ##  \brief Move a poller from its current lcore to a new lcore.
+    ##
+
+
 type
   INNER_C_STRUCT_1654608893* = object
     tqe_next*: ptr spdk_subsystem ##  next element

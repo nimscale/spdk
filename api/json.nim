@@ -81,47 +81,44 @@ type
     `type`*: spdk_json_val_type
 
 
-## *
-##  Invalid JSON syntax.
-##
-
 const
   SPDK_JSON_PARSE_INVALID* = - 1
-
-## *
-##  JSON was valid up to the end of the current buffer, but did not represent a complete JSON value.
-##
+    ## *
+    ##  Invalid JSON syntax.
+    ##
 
 const
   SPDK_JSON_PARSE_INCOMPLETE* = - 2
   SPDK_JSON_PARSE_MAX_DEPTH_EXCEEDED* = - 3
-
-## *
-##  Decode JSON strings and names in place (modify the input buffer).
-##
+    ## *
+    ##  JSON was valid up to the end of the current buffer, but did not represent a complete JSON value.
+    ##
 
 const
   SPDK_JSON_PARSE_FLAG_DECODE_IN_PLACE* = 0x0000000000000001'i64
-
-##
-##  Parse JSON data.
-##
-##  \param data Raw JSON data; must be encoded in UTF-8.
-##  Note that the data may be modified to perform in-place string decoding.
-##
-##  \param size Size of data in bytes.
-##
-##  \param end If non-NULL, this will be filled a pointer to the byte just beyond the end
-##  of the valid JSON.
-##
-##  \return Number of values parsed, or negative on failure:
-##  SPDK_JSON_PARSE_INVALID if the provided data was not valid JSON, or
-##  SPDK_JSON_PARSE_INCOMPLETE if the provided data was not a complete JSON value.
-##
+    ## *
+    ##  Decode JSON strings and names in place (modify the input buffer).
+    ##
 
 proc spdk_json_parse*(json: pointer; size: csize; values: ptr spdk_json_val;
                      num_values: csize; `end`: ptr pointer; flags: uint32): cint {.
     cdecl, importc: "spdk_json_parse", dynlib: libspdk.}  # returns ssize_t : it's different on 32-bit/64-bit machines
+    ##
+    ##  Parse JSON data.
+    ##
+    ##  \param data Raw JSON data; must be encoded in UTF-8.
+    ##  Note that the data may be modified to perform in-place string decoding.
+    ##
+    ##  \param size Size of data in bytes.
+    ##
+    ##  \param end If non-NULL, this will be filled a pointer to the byte just beyond the end
+    ##  of the valid JSON.
+    ##
+    ##  \return Number of values parsed, or negative on failure:
+    ##  SPDK_JSON_PARSE_INVALID if the provided data was not valid JSON, or
+    ##  SPDK_JSON_PARSE_INCOMPLETE if the provided data was not a complete JSON value.
+    ##
+
 type
   spdk_json_decode_fn* = proc (val: ptr spdk_json_val; `out`: pointer): cint {.cdecl.}
   spdk_json_object_decoder* = object
@@ -145,38 +142,38 @@ proc spdk_json_decode_uint32*(val: ptr spdk_json_val; `out`: pointer): cint {.cd
     importc: "spdk_json_decode_uint32", dynlib: libspdk.}
 proc spdk_json_decode_string*(val: ptr spdk_json_val; `out`: pointer): cint {.cdecl,
     importc: "spdk_json_decode_string", dynlib: libspdk.}
-## *
-##  Get length of a value in number of values.
-##
-##  This can be used to skip over a value while interpreting parse results.
-##
-##  For SPDK_JSON_VAL_ARRAY_BEGIN and SPDK_JSON_VAL_OBJECT_BEGIN,
-##   this returns the number of values contained within this value, plus the _BEGIN and _END values.
-##
-##  For all other values, this returns 1.
-##
 
 proc spdk_json_val_len*(val: ptr spdk_json_val): csize {.cdecl,
     importc: "spdk_json_val_len", dynlib: libspdk.}
-## *
-##  Compare JSON string with null terminated C string.
-##
-##  \return true if strings are equal or false if not
-##
+    ## *
+    ##  Get length of a value in number of values.
+    ##
+    ##  This can be used to skip over a value while interpreting parse results.
+    ##
+    ##  For SPDK_JSON_VAL_ARRAY_BEGIN and SPDK_JSON_VAL_OBJECT_BEGIN,
+    ##   this returns the number of values contained within this value, plus the _BEGIN and _END values.
+    ##
+    ##  For all other values, this returns 1.
+    ##
 
 proc spdk_json_strequal*(val: ptr spdk_json_val; str: cstring): bool {.cdecl,
     importc: "spdk_json_strequal", dynlib: libspdk.}
-## *
-##  Equivalent of strdup() for JSON string values.
-##
-##  If val is not representable as a C string (contains embedded '\0' characters),
-##  returns NULL.
-##
-##  Caller is responsible for passing the result to free() when it is no longer needed.
-##
-
+    ## *
+    ##  Compare JSON string with null terminated C string.
+    ##
+    ##  \return true if strings are equal or false if not
+    ##
 proc spdk_json_strdup*(val: ptr spdk_json_val): cstring {.cdecl,
     importc: "spdk_json_strdup", dynlib: libspdk.}
+    ## *
+    ##  Equivalent of strdup() for JSON string values.
+    ##
+    ##  If val is not representable as a C string (contains embedded '\0' characters),
+    ##  returns NULL.
+    ##
+    ##  Caller is responsible for passing the result to free() when it is no longer needed.
+    ##
+
 proc spdk_json_number_to_double*(val: ptr spdk_json_val; num: ptr cdouble): cint {.
     cdecl, importc: "spdk_json_number_to_double", dynlib: libspdk.}
 proc spdk_json_number_to_int32*(val: ptr spdk_json_val; num: ptr int32): cint {.cdecl,
@@ -219,11 +216,11 @@ proc spdk_json_write_name_raw*(w: ptr spdk_json_write_ctx; name: cstring; len: c
     cdecl, importc: "spdk_json_write_name_raw", dynlib: libspdk.}
 proc spdk_json_write_val*(w: ptr spdk_json_write_ctx; val: ptr spdk_json_val): cint {.
     cdecl, importc: "spdk_json_write_val", dynlib: libspdk.}
-##
-##  Append bytes directly to the output stream without validation.
-##
-##  Can be used to write values with specific encodings that differ from the JSON writer output.
-##
 
 proc spdk_json_write_val_raw*(w: ptr spdk_json_write_ctx; data: pointer; len: csize): cint {.
     cdecl, importc: "spdk_json_write_val_raw", dynlib: libspdk.}
+    ##
+    ##  Append bytes directly to the output stream without validation.
+    ##
+    ##  Can be used to write values with specific encodings that differ from the JSON writer output.
+    ##

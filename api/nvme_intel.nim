@@ -186,9 +186,9 @@ assert(sizeof(spdk_nvme_intel_feat_led_pattern) == 4, "Incorrect size")
 type
   INNER_C_STRUCT_2567044396* = object
     reset* {.bitsize: 1.}: uint32 ## *
-                              ##  Write Usage: 00 = NOP, 1 = Reset E2, E3,E4 counters;
-                              ##  Read Usage: Not Supported
-                              ##
+                                  ##  Write Usage: 00 = NOP, 1 = Reset E2, E3,E4 counters;
+                                  ##  Read Usage: Not Supported
+                                  ##
     reserved* {.bitsize: 31.}: uint32
 
   spdk_nvme_intel_feat_reset_timed_workload_counters* = object {.union.}

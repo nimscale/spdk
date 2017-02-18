@@ -48,10 +48,9 @@ else:
 import
   event, trace, bdev
 
-##  Defines for SPDK tracing framework
 
 type
-  iovec {.importc: "struct iovec", final.} = object
+  iovec {.importc: "struct iovec", final.} = object ##  Defines for SPDK tracing framework
 
 const
   OWNER_SCSI_DEV* = 0x00000010
@@ -80,12 +79,11 @@ type
     SPDK_SCSI_TASK_TYPE_CMD = 0, SPDK_SCSI_TASK_TYPE_MANAGE
 
 
-  ##
-  ##  SAM does not define the value for these service responses.  Each transport
-  ##   (i.e. SAS, FC, iSCSI) will map these value to transport-specific codes,
-  ##   and may add their own.
-  ##
-  spdk_scsi_task_mgmt_resp* {.size: sizeof(cint).} = enum
+  spdk_scsi_task_mgmt_resp* {.size: sizeof(cint).} = enum   ##
+                                                            ##  SAM does not define the value for these service responses.  Each transport
+                                                            ##   (i.e. SAS, FC, iSCSI) will map these value to transport-specific codes,
+                                                            ##   and may add their own.
+                                                            ##
     SPDK_SCSI_TASK_MGMT_RESP_COMPLETE, SPDK_SCSI_TASK_MGMT_RESP_SUCCESS,
     SPDK_SCSI_TASK_MGMT_RESP_REJECT, SPDK_SCSI_TASK_MGMT_RESP_INVALID_LUN,
     SPDK_SCSI_TASK_MGMT_RESP_TARGET_FAILURE,
@@ -159,18 +157,17 @@ type
     port*: array[SPDK_SCSI_DEV_MAX_PORTS, spdk_scsi_port]
 
 
-  ## *
-  ##
-  ## \brief Represents a SCSI LUN.
-  ##
-  ## LUN modules will implement the function pointers specifically for the LUN
-  ## type.  For example, NVMe LUNs will implement scsi_execute to translate
-  ## the SCSI task to an NVMe command and post it to the NVMe controller.
-  ## malloc LUNs will implement scsi_execute to translate the SCSI task and
-  ## copy the task's data into or out of the allocated memory buffer.
-  ##
-  ##
-  tasks_2308317991* = object
+  tasks_2308317991* = object    ## *
+                                ##
+                                ## \brief Represents a SCSI LUN.
+                                ##
+                                ## LUN modules will implement the function pointers specifically for the LUN
+                                ## type.  For example, NVMe LUNs will implement scsi_execute to translate
+                                ## the SCSI task to an NVMe command and post it to the NVMe controller.
+                                ## malloc LUNs will implement scsi_execute to translate the SCSI task and
+                                ## copy the task's data into or out of the allocated memory buffer.
+                                ##
+                                ##
     tqh_first*: ptr spdk_scsi_task ##  first element
     tqh_last*: ptr ptr spdk_scsi_task ##  addr of last next element
 
@@ -200,26 +197,27 @@ proc spdk_scsi_dev_find_port_by_id*(dev: ptr spdk_scsi_dev; id: uint64): ptr spd
     cdecl, importc: "spdk_scsi_dev_find_port_by_id", dynlib: libspdk.}
 proc spdk_scsi_dev_print*(dev: ptr spdk_scsi_dev) {.cdecl,
     importc: "spdk_scsi_dev_print", dynlib: libspdk.}
-## *
-##
-## \brief Constructs a SCSI device object using the given parameters.
-##
-## \param name Name for the SCSI device.
-## \param queue_depth Queue depth for the SCSI device.  This queue depth is
-## 		   a combined queue depth for all LUNs in the device.
-## \param lun_list List of LUN objects for the SCSI device.  Caller is
-## 		responsible for managing the memory containing this list.
-## \param lun_id_list List of LUN IDs for the LUN in this SCSI device.  Caller is
-## 		   responsible for managing the memory containing this list.
-## 		   lun_id_list[x] is the LUN ID for lun_list[x].
-## \param num_luns Number of entries in lun_list and lun_id_list.
-## \return The constructed spdk_scsi_dev object.
-##
-##
 
 proc spdk_scsi_dev_construct*(name: cstring; lun_name_list: ptr cstring;
                              lun_id_list: ptr cint; num_luns: cint): ptr spdk_scsi_dev {.
     cdecl, importc: "spdk_scsi_dev_construct", dynlib: libspdk.}
+  ## *
+  ##
+  ## \brief Constructs a SCSI device object using the given parameters.
+  ##
+  ## \param name Name for the SCSI device.
+  ## \param queue_depth Queue depth for the SCSI device.  This queue depth is
+  ## 		   a combined queue depth for all LUNs in the device.
+  ## \param lun_list List of LUN objects for the SCSI device.  Caller is
+  ## 		responsible for managing the memory containing this list.
+  ## \param lun_id_list List of LUN IDs for the LUN in this SCSI device.  Caller is
+  ## 		   responsible for managing the memory containing this list.
+  ## 		   lun_id_list[x] is the LUN ID for lun_list[x].
+  ## \param num_luns Number of entries in lun_list and lun_id_list.
+  ## \return The constructed spdk_scsi_dev object.
+  ##
+  ##
+
 proc spdk_scsi_dev_delete_lun*(dev: ptr spdk_scsi_dev; lun: ptr spdk_scsi_lun) {.cdecl,
     importc: "spdk_scsi_dev_delete_lun", dynlib: libspdk.}
 proc spdk_scsi_port_construct*(port: ptr spdk_scsi_port; id: uint64; index: uint16;

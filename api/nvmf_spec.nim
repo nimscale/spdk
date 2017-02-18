@@ -60,10 +60,9 @@ type
 
 
 assert(sizeof(spdk_nvmf_capsule_cmd) == 64, "Incorrect size")
-##  Fabric Command Set
 
 const
-  SPDK_NVME_OPC_FABRIC* = 0x0000007F
+  SPDK_NVME_OPC_FABRIC* = 0x0000007F ##  Fabric Command Set
 
 type
   spdk_nvmf_fabric_cmd_types* {.size: sizeof(cint).} = enum
@@ -86,22 +85,20 @@ type
     SPDK_NVMF_FABRIC_SC_AUTH_REQUIRED = 0x00000091
 
 
-## *
-##  RDMA Queue Pair service types
-##
-
 type
   spdk_nvmf_rdma_qptype* {.size: sizeof(cint).} = enum ## * Reliable connected
+    ## *
+    ##  RDMA Queue Pair service types
+    ##
     SPDK_NVMF_RDMA_QPTYPE_RELIABLE_CONNECTED = 0x00000001, ## * Reliable datagram
     SPDK_NVMF_RDMA_QPTYPE_RELIABLE_DATAGRAM = 0x00000002
 
 
-## *
-##  RDMA provider types
-##
-
 type
   spdk_nvmf_rdma_prtype* {.size: sizeof(cint).} = enum ## * No provider specified
+    ## *
+    ##  RDMA provider types
+    ##
     SPDK_NVMF_RDMA_PRTYPE_NONE = 0x00000001, ## * InfiniBand
     SPDK_NVMF_RDMA_PRTYPE_IB = 0x00000002, ## * RoCE v1
     SPDK_NVMF_RDMA_PRTYPE_ROCE = 0x00000003, ## * RoCE v2
@@ -109,32 +106,29 @@ type
     SPDK_NVMF_RDMA_PRTYPE_IWARP = 0x00000005
 
 
-## *
-##  RDMA connection management service types
-##
-
 type
   spdk_nvmf_rdma_cms* {.size: sizeof(cint).} = enum ## * Sockets based endpoint addressing
+    ## *
+    ##  RDMA connection management service types
+    ##
     SPDK_NVMF_RDMA_CMS_RDMA_CM = 0x00000001
 
 
-## *
-##  NVMe over Fabrics transport types
-##
-
 type
   spdk_nvmf_trtype* {.size: sizeof(cint).} = enum ## * RDMA
+    ## *
+    ##  NVMe over Fabrics transport types
+    ##
     SPDK_NVMF_TRTYPE_RDMA = 0x00000001, ## * Fibre Channel
     SPDK_NVMF_TRTYPE_FC = 0x00000002, ## * Intra-host transport (loopback)
     SPDK_NVMF_TRTYPE_INTRA_HOST = 0x000000FE
 
 
-## *
-##  Address family types
-##
-
 type
   spdk_nvmf_adrfam* {.size: sizeof(cint).} = enum ## * IPv4 (AF_INET)
+    ## *
+    ##  Address family types
+    ##
     SPDK_NVMF_ADRFAM_IPV4 = 0x00000001, ## * IPv6 (AF_INET6)
     SPDK_NVMF_ADRFAM_IPV6 = 0x00000002, ## * InfiniBand (AF_IB)
     SPDK_NVMF_ADRFAM_IB = 0x00000003, ## * Fibre Channel address family
@@ -142,22 +136,20 @@ type
     SPDK_NVMF_ADRFAM_INTRA_HOST = 0x000000FE
 
 
-## *
-##  NVM subsystem types
-##
-
 type
   spdk_nvmf_subtype* {.size: sizeof(cint).} = enum ## * Discovery type for NVM subsystem
+    ## *
+    ##  NVM subsystem types
+    ##
     SPDK_NVMF_SUBTYPE_DISCOVERY = 0x00000001, ## * NVMe type for NVM subsystem
     SPDK_NVMF_SUBTYPE_NVME = 0x00000002
 
 
-## *
-##  Connections shall be made over a fabric secure channel
-##
-
 type
   spdk_nvmf_treq_secure_channel* {.size: sizeof(cint).} = enum ## * Not specified
+    ## *
+    ##  Connections shall be made over a fabric secure channel
+    ##
     SPDK_NVMF_TREQ_SECURE_CHANNEL_NOT_SPECIFIED = 0x00000000, ## * Required
     SPDK_NVMF_TREQ_SECURE_CHANNEL_REQUIRED = 0x00000001, ## * Not required
     SPDK_NVMF_TREQ_SECURE_CHANNEL_NOT_REQUIRED = 0x00000002
@@ -322,10 +314,9 @@ const
   SPDK_NVMF_NQN_MAX_LEN* = 223
   SPDK_NVMF_DISCOVERY_NQN* = "nqn.2014-08.org.nvmexpress.discovery"
 
-## * RDMA transport-specific address subtype
-
 type
   spdk_nvmf_rdma_transport_specific_address_subtype* = object
+    ## * RDMA transport-specific address subtype
     rdma_qptype*: uint8        ## * RDMA QP service type (\ref spdk_nvmf_rdma_qptype)
     ## * RDMA provider type (\ref spdk_nvmf_rdma_prtype)
     rdma_prtype*: uint8        ## * RDMA connection management service (\ref spdk_nvmf_rdma_cms)
@@ -337,19 +328,16 @@ type
 
 assert(sizeof(spdk_nvmf_rdma_transport_specific_address_subtype) == 256,
        "Incorrect size")
-## * Transport-specific address subtype
 
 type
   spdk_nvmf_transport_specific_address_subtype* = object {.union.}
+    ## * Transport-specific address subtype
     raw*: array[256, uint8]     ## * RDMA
     rdma*: spdk_nvmf_rdma_transport_specific_address_subtype
 
 
 assert(sizeof(spdk_nvmf_transport_specific_address_subtype) == 256,
        "Incorrect size")
-## *
-##  Discovery Log Page entry
-##
 
 type
   INNER_C_STRUCT_1163853123* = object
@@ -357,6 +345,9 @@ type
     reserved* {.bitsize: 6.}: uint8
 
   spdk_nvmf_discovery_log_page_entry* = object
+    ## *
+    ##  Discovery Log Page entry
+    ##
     trtype*: uint8             ## * Transport type (\ref spdk_nvmf_trtype)
     ## * Address family (\ref spdk_nvmf_adrfam)
     adrfam*: uint8             ## * Subsystem type (\ref spdk_nvmf_subtype)
@@ -384,10 +375,9 @@ type
 
 
 assert(sizeof(spdk_nvmf_discovery_log_page) == 1024, "Incorrect size")
-##  RDMA Fabric specific definitions below
 
 const
-  SPDK_NVME_SGL_SUBTYPE_INVALIDATE_KEY* = 0x0000000F
+  SPDK_NVME_SGL_SUBTYPE_INVALIDATE_KEY* = 0x0000000F   ##  RDMA Fabric specific definitions below
 
 type
   spdk_nvmf_rdma_request_private_data* = object

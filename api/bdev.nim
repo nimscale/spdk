@@ -45,23 +45,6 @@ else:
 ##  Block device abstraction layer
 ##
 
-import
-  event, scsi_spec
-
-const
-  SPDK_BDEV_SMALL_RBUF_MAX_SIZE* = 8192
-  SPDK_BDEV_LARGE_RBUF_MAX_SIZE* = (64 * 1024)
-  SPDK_BDEV_MAX_NAME_LENGTH* = 16
-  SPDK_BDEV_MAX_PRODUCT_NAME_LENGTH* = 50
-
-#type
-#  spdk_bdev_io* = object
-
-## some magig to get it work
-type
-  iovec {.importc: "struct iovec", final.} = object
-
-template offsetof(typ, field): expr = (var dummy: typ; cast[uint64](addr(dummy.field)) - cast[uint64](addr(dummy)))
 
 ## * \page block_backend_modules Block Device Backend Modules
 ##
@@ -87,7 +70,7 @@ template offsetof(typ, field): expr = (var dummy: typ; cast[uint64](addr(dummy.f
 ##
 ## The value can be extracted as the example below:
 ## <blockquote><pre>
-## struct spdk_conf_section *sp = spdk_conf_find_section(NULL, "MyBe");
+## struct spdk_conf_section \*sp = spdk_conf_find_section(NULL, "MyBe");
 ## int my_param = spdk_conf_section_get_intval(sp, "MyParam");
 ## </pre></blockquote>
 ##
@@ -102,13 +85,26 @@ template offsetof(typ, field): expr = (var dummy: typ; cast[uint64](addr(dummy.f
 ##  This is a virtual representation of a block device that is exported by the backend.
 ##
 
-type
 
-  ## *
-  ##  Block device I/O
-  ##
-  ##  This is an I/O that is passed to an spdk_bdev.
-  ##
+import
+  event, scsi_spec
+
+const
+  SPDK_BDEV_SMALL_RBUF_MAX_SIZE* = 8192
+  SPDK_BDEV_LARGE_RBUF_MAX_SIZE* = (64 * 1024)
+  SPDK_BDEV_MAX_NAME_LENGTH* = 16
+  SPDK_BDEV_MAX_PRODUCT_NAME_LENGTH* = 50
+
+#type
+#  spdk_bdev_io* = object
+
+## some magig to get it work
+type
+  iovec {.importc: "struct iovec", final.} = object
+
+template offsetof(typ, field): expr = (var dummy: typ; cast[uint64](addr(dummy.field)) - cast[uint64](addr(dummy)))
+
+type
   INNER_C_STRUCT_3482877819* = object
     buf_unaligned*: pointer    ## * The unaligned rbuf originally allocated.
     ## * For single buffer cases, pointer to the aligned data buffer.
@@ -159,6 +155,11 @@ type
     tqe_prev*: ptr ptr spdk_bdev_io ##  address of previous next element
 
   spdk_bdev_io* = object
+    ## *
+    ##  Block device I/O
+    ##
+    ##  This is an I/O that is passed to an spdk_bdev.
+    ##
     ctx*: pointer              ## * Pointer to scratch area reserved for use by the driver consuming this spdk_bdev_io.
     ## * Generation value for each I/O.
     gencnt*: uint32            ## * The block device that this I/O belongs to.
@@ -214,14 +215,14 @@ type
                  ## 	TAILQ_ENTRY(spdk_bdev) link;
     link*: INNER_C_STRUCT_3156946749
 
-  ## *
-  ##  Function table for a block device backend.
-  ##
-  ##  The backend block device function table provides a set of APIs to allow
-  ##  communication with a backend. The main commands are read/write API
-  ##  calls for I/O via submit_request.
-  ##
   spdk_bdev_fn_table* = object
+    ## *
+    ##  Function table for a block device backend.
+    ##
+    ##  The backend block device function table provides a set of APIs to allow
+    ##  communication with a backend. The main commands are read/write API
+    ##  calls for I/O via submit_request.
+    ##
     destruct*: proc (bdev: ptr spdk_bdev): cint {.cdecl.} ## * Destroy the backend block device object
     ## * Poll the backend for I/O waiting to be completed.
     check_io*: proc (bdev: ptr spdk_bdev): cint {.cdecl.} ## * Process the IO.
