@@ -6,7 +6,6 @@ description   = "SDPK bind for nim."
 license       = "Apache Licence 2.0"
 
 srcDir = "api"
-bin = @["spdk-1"]
 
 # Dependencies
 

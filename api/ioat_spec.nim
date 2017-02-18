@@ -235,11 +235,8 @@ type
     src_addr4*: uint64
     src_addr5*: uint64
 
-
-## spdk_ioat_xor_hw_desc.u.control.op
-
 const
-  SPDK_IOAT_OP_XOR* = 0x00000087
+  SPDK_IOAT_OP_XOR* = 0x00000087  ## spdk_ioat_xor_hw_desc.u.control.op
   SPDK_IOAT_OP_XOR_VAL* = 0x00000088
 
 type

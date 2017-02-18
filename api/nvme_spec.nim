@@ -46,11 +46,6 @@ else:
 ##
 
 
-## *
-##  Use to mark a command to apply to all namespaces, or to retrieve global
-##   log pages.
-##
-
 const
   SPDK_NVME_GLOBAL_NS_TAG* = 0xFFFFFFFF'u32
   SPDK_NVME_MAX_IO_QUEUES* = (65535)
@@ -58,6 +53,11 @@ const
   SPDK_NVME_ADMIN_QUEUE_MAX_ENTRIES* = 4096
   SPDK_NVME_IO_QUEUE_MIN_ENTRIES* = 2
   SPDK_NVME_IO_QUEUE_MAX_ENTRIES* = 65536
+  ## *
+  ##  Use to mark a command to apply to all namespaces, or to retrieve global
+  ##   log pages.
+  ##
+
 
 ## *
 ##  Indicates the maximum number of range sets that may be specified
@@ -302,39 +302,36 @@ type
     SPDK_NVME_PSDT_SGL_MPTR_SGL = 0x00000002, SPDK_NVME_PSDT_RESERVED = 0x00000003
 
 
-## *
-##  Submission queue priority values for Create I/O Submission Queue Command.
-##
-##  Only valid for weighted round robin arbitration method.
-##
 
 type
   spdk_nvme_qprio* {.size: sizeof(cint).} = enum
+    ## *
+    ##  Submission queue priority values for Create I/O Submission Queue Command.
+    ##
+    ##  Only valid for weighted round robin arbitration method.
+    ##
     SPDK_NVME_QPRIO_URGENT = 0x00000000, SPDK_NVME_QPRIO_HIGH = 0x00000001,
     SPDK_NVME_QPRIO_MEDIUM = 0x00000002, SPDK_NVME_QPRIO_LOW = 0x00000003
 
 
-## *
-##  Optional Arbitration Mechanism Supported by the controller.
-##
-##  Two bits for CAP.AMS (18:17) field are set to '1' when the controller supports.
-##  There is no bit for AMS_RR where all controllers support and set to 0x0 by default.
-##
-
 type
   spdk_nvme_cap_ams* {.size: sizeof(cint).} = enum
+    ## *
+    ##  Optional Arbitration Mechanism Supported by the controller.
+    ##
+    ##  Two bits for CAP.AMS (18:17) field are set to '1' when the controller supports.
+    ##  There is no bit for AMS_RR where all controllers support and set to 0x0 by default.
+    ##
     SPDK_NVME_CAP_AMS_WRR = 0x00000001, ## *< weighted round robin
     SPDK_NVME_CAP_AMS_VS = 0x00000002 ## *< vendor specific
 
-
-## *
-##  Arbitration Mechanism Selected to the controller.
-##
-##  Value 0x2 to 0x6 is reserved.
-##
-
 type
   spdk_nvme_cc_ams* {.size: sizeof(cint).} = enum
+    ## *
+    ##  Arbitration Mechanism Selected to the controller.
+    ##
+    ##  Value 0x2 to 0x6 is reserved.
+    ##
     SPDK_NVME_CC_AMS_RR = 0x00000000, ## *< default round robin
     SPDK_NVME_CC_AMS_WRR = 0x00000001, ## *< weighted round robin
     SPDK_NVME_CC_AMS_VS = 0x00000007 ## *< vendor specific
@@ -384,12 +381,12 @@ type
 
 
 assert(sizeof(spdk_nvme_status) == 2, "Incorrect size")
-## *
-##  Completion queue entry
-##
 
 type
   spdk_nvme_cpl* = object
+    ## *
+    ##  Completion queue entry
+    ##
     cdw0*: uint32              ##  dword 0
     ##  command-specific
     ##  dword 1
@@ -402,35 +399,34 @@ type
 
 
 assert(sizeof(spdk_nvme_cpl) == 16, "Incorrect size")
-## *
-##  Dataset Management range
-##
 
 type
   spdk_nvme_dsm_range* = object
+    ## *
+    ##  Dataset Management range
+    ##
     attributes*: uint32
     length*: uint32
     starting_lba*: uint64
 
 
 assert(sizeof(spdk_nvme_dsm_range) == 16, "Incorrect size")
-## *
-##  Status code types
-##
 
 type
   spdk_nvme_status_code_type* {.size: sizeof(cint).} = enum
+    ## *
+    ##  Status code types
+    ##
     SPDK_NVME_SCT_GENERIC = 0x00000000,
     SPDK_NVME_SCT_COMMAND_SPECIFIC = 0x00000001, SPDK_NVME_SCT_MEDIA_ERROR = 0x00000002, ##  0x3-0x6 - reserved
     SPDK_NVME_SCT_VENDOR_SPECIFIC = 0x00000007
 
 
-## *
-##  Generic command status codes
-##
-
 type
   spdk_nvme_generic_command_status_code* {.size: sizeof(cint).} = enum
+    ## *
+    ##  Generic command status codes
+    ##
     SPDK_NVME_SC_SUCCESS = 0x00000000, SPDK_NVME_SC_INVALID_OPCODE = 0x00000001,
     SPDK_NVME_SC_INVALID_FIELD = 0x00000002,
     SPDK_NVME_SC_COMMAND_ID_CONFLICT = 0x00000003,
@@ -461,12 +457,11 @@ type
     SPDK_NVME_SC_NAMESPACE_NOT_READY = 0x00000082
 
 
-## *
-##  Command specific status codes
-##
-
 type
   spdk_nvme_command_specific_status_code* {.size: sizeof(cint).} = enum
+    ## *
+    ##  Command specific status codes
+    ##
     SPDK_NVME_SC_COMPLETION_QUEUE_INVALID = 0x00000000,
     SPDK_NVME_SC_INVALID_QUEUE_IDENTIFIER = 0x00000001,
     SPDK_NVME_SC_MAXIMUM_QUEUE_SIZE_EXCEEDED = 0x00000002, SPDK_NVME_SC_ABORT_COMMAND_LIMIT_EXCEEDED = 0x00000003, ##  0x04 - reserved
@@ -482,12 +477,11 @@ type
     SPDK_NVME_SC_ATTEMPTED_WRITE_TO_RO_PAGE = 0x00000082
 
 
-## *
-##  Media error status codes
-##
-
 type
   spdk_nvme_media_error_status_code* {.size: sizeof(cint).} = enum
+    ## *
+    ##  Media error status codes
+    ##
     SPDK_NVME_SC_WRITE_FAULTS = 0x00000080,
     SPDK_NVME_SC_UNRECOVERED_READ_ERROR = 0x00000081,
     SPDK_NVME_SC_GUARD_CHECK_ERROR = 0x00000082,
@@ -497,12 +491,11 @@ type
     SPDK_NVME_SC_ACCESS_DENIED = 0x00000086
 
 
-## *
-##  Admin opcodes
-##
-
 type
   spdk_nvme_admin_opcode* {.size: sizeof(cint).} = enum
+    ## *
+    ##  Admin opcodes
+    ##
     SPDK_NVME_OPC_DELETE_IO_SQ = 0x00000000,
     SPDK_NVME_OPC_CREATE_IO_SQ = 0x00000001, SPDK_NVME_OPC_GET_LOG_PAGE = 0x00000002, ##  0x03 - reserved
     SPDK_NVME_OPC_DELETE_IO_CQ = 0x00000004,
@@ -517,12 +510,11 @@ type
     SPDK_NVME_OPC_SECURITY_RECEIVE = 0x00000082
 
 
-## *
-##  NVM command set opcodes
-##
-
 type
   spdk_nvme_nvm_opcode* {.size: sizeof(cint).} = enum
+    ## *
+    ##  NVM command set opcodes
+    ##
     SPDK_NVME_OPC_FLUSH = 0x00000000, SPDK_NVME_OPC_WRITE = 0x00000001, SPDK_NVME_OPC_READ = 0x00000002, ##  0x03 - reserved
     SPDK_NVME_OPC_WRITE_UNCORRECTABLE = 0x00000004, SPDK_NVME_OPC_COMPARE = 0x00000005, ##  0x06-0x07 - reserved
     SPDK_NVME_OPC_WRITE_ZEROES = 0x00000008,
@@ -533,29 +525,28 @@ type
     SPDK_NVME_OPC_RESERVATION_RELEASE = 0x00000015
 
 
-## *
-##  Data transfer (bits 1:0) of an NVMe opcode.
-##
-##  \sa spdk_nvme_opc_get_data_transfer
-##
-
 type
   spdk_nvme_data_transfer* {.size: sizeof(cint).} = enum ## * Opcode does not transfer data
+    ## *
+    ##  Data transfer (bits 1:0) of an NVMe opcode.
+    ##
+    ##  \sa spdk_nvme_opc_get_data_transfer
+    ##
     SPDK_NVME_DATA_NONE = 0,    ## * Opcode transfers data from host to controller (e.g. Write)
     SPDK_NVME_DATA_HOST_TO_CONTROLLER = 1, ## * Opcode transfers data from controller to host (e.g. Read)
     SPDK_NVME_DATA_CONTROLLER_TO_HOST = 2, ## * Opcode transfers data both directions
     SPDK_NVME_DATA_BIDIRECTIONAL = 3
 
 
-## *
-##  Extract the Data Transfer bits from an NVMe opcode.
-##
-##  This determines whether a command requires a data buffer and
-##  which direction (host to controller or controller to host) it is
-##  transferred.
-##
 
 proc spdk_nvme_opc_get_data_transfer*(opc: uint8): uint8 {.inline.} =
+  ## *
+  ##  Extract the Data Transfer bits from an NVMe opcode.
+  ##
+  ##  This determines whether a command requires a data buffer and
+  ##  which direction (host to controller or controller to host) it is
+  ##  transferred.
+  ##
   return opc and 3
 
 type
@@ -606,10 +597,11 @@ type
 
 
 assert(sizeof(spdk_nvme_power_state) == 32, "Incorrect size")
-## * Identify command CNS value
+
 
 type
   spdk_nvme_identify_cns* {.size: sizeof(cint).} = enum ## * Identify namespace indicated in CDW1.NSID
+    ## * Identify command CNS value
     SPDK_NVME_IDENTIFY_NS = 0x00000000, ## * Identify controller
     SPDK_NVME_IDENTIFY_CTRLR = 0x00000001, ## * List active NSIDs greater than CDW1.NSID
     SPDK_NVME_IDENTIFY_ACTIVE_NS_LIST = 0x00000002, ## * List allocated NSIDs greater than CDW1.NSID
@@ -619,10 +611,10 @@ type
     SPDK_NVME_IDENTIFY_CTRLR_LIST = 0x00000013
 
 
-## * NVMe over Fabrics controller model
 
 type
   spdk_nvmf_ctrlr_model* {.size: sizeof(cint).} = enum ## * NVM subsystem uses dynamic controller model
+    ## * NVMe over Fabrics controller model
     SPDK_NVMF_CTRLR_MODEL_DYNAMIC = 0, ## * NVM subsystem uses static controller model
     SPDK_NVMF_CTRLR_MODEL_STATIC = 1
 
@@ -790,11 +782,6 @@ type
     psd*: array[32, spdk_nvme_power_state] ##  bytes 3072-4095: vendor specific
     vs*: array[1024, uint8]
 
-#[TBD]#
-### rivasiv: This is alternative variant. spdk_nvme_sgl_descriptor is alligned with /*__attribute__((packed))*/ in nim community It was recomended to use
-### importc and header pragmas instead of wrapping all structure, access to fields suppose to be organized also
-#type
-#  spdk_nvme_ctrlr_data* {.importc: "struct spdk_nvme_ctrlr_data", packed, final.} = object
 assert(sizeof(spdk_nvme_ctrlr_data) == 4096, "Incorrect size")
 
 type
@@ -890,13 +877,13 @@ type
 
 
 assert(sizeof(spdk_nvme_ns_data) == 4096, "Incorrect size")
-## *
-##  Reservation Type Encoding
-##
 
 type
   spdk_nvme_reservation_type* {.size: sizeof(cint).} = enum ##  0x00 - reserved
-                                                       ##  Write Exclusive Reservation
+    ## *
+    ##  Reservation Type Encoding
+    ##
+    ##  Write Exclusive Reservation
     SPDK_NVME_RESERVE_WRITE_EXCLUSIVE = 0x00000001, ##  Exclusive Access Reservation
     SPDK_NVME_RESERVE_EXCLUSIVE_ACCESS = 0x00000002, ##  Write Exclusive - Registrants Only Reservation
     SPDK_NVME_RESERVE_WRITE_EXCLUSIVE_REG_ONLY = 0x00000003, ##  Exclusive Access - Registrants Only Reservation
@@ -913,12 +900,12 @@ type
 
 
 assert(sizeof(spdk_nvme_reservation_acquire_data) == 16, "Incorrect size")
-## *
-##  Reservation Acquire action
-##
 
 type
   spdk_nvme_reservation_acquire_action* {.size: sizeof(cint).} = enum
+    ## *
+    ##  Reservation Acquire action
+    ##
     SPDK_NVME_RESERVE_ACQUIRE = 0x00000000, SPDK_NVME_RESERVE_PREEMPT = 0x00000001,
     SPDK_NVME_RESERVE_PREEMPT_ABORT = 0x00000002
 
@@ -1049,13 +1036,12 @@ type
 
 
 assert(sizeof(spdk_nvme_critical_warning_state) == 1, "Incorrect size")
-## *
-##  SMART / health information page (\ref SPDK_NVME_LOG_HEALTH_INFORMATION)
-##
-
 
 type
   spdk_nvme_health_information_page* {.packed.} = object
+    ## *
+    ##  SMART / health information page (\ref SPDK_NVME_LOG_HEALTH_INFORMATION)
+    ##
     critical_warning*: spdk_nvme_critical_warning_state
     temperature*: uint16
     available_spare*: uint8
@@ -1080,12 +1066,12 @@ type
 
 assert(sizeof(spdk_nvme_health_information_page) == 512, "Incorrect size")
 
-## *
-##  Firmware slot information page (\ref SPDK_NVME_LOG_FIRMWARE_SLOT)
-##
 
 type
   INNER_C_STRUCT_3288450467* = object
+    ## *
+    ##  Firmware slot information page (\ref SPDK_NVME_LOG_FIRMWARE_SLOT)
+    ##
     slot* {.bitsize: 3.}: uint8  ##  slot for current FW
     reserved* {.bitsize: 5.}: uint8
 
@@ -1097,22 +1083,21 @@ type
 
 
 assert(sizeof(spdk_nvme_firmware_page) == 512, "Incorrect size")
-## *
-##  Namespace attachment Type Encoding
-##
 
 type
   spdk_nvme_ns_attach_type* {.size: sizeof(cint).} = enum ##  Controller attach
+    ## *
+    ##  Namespace attachment Type Encoding
+    ##
     SPDK_NVME_NS_CTRLR_ATTACH = 0x00000000, ##  Controller detach
     SPDK_NVME_NS_CTRLR_DETACH = 0x00000001 ##  0x2-0xF - Reserved
 
 
-## *
-##  Namespace management Type Encoding
-##
-
 type
   spdk_nvme_ns_management_type* {.size: sizeof(cint).} = enum ##  Create
+    ## *
+    ##  Namespace management Type Encoding
+    ##
     SPDK_NVME_NS_MANAGEMENT_CREATE = 0x00000000, ##  Delete
     SPDK_NVME_NS_MANAGEMENT_DELETE = 0x00000001 ##  0x2-0xF - Reserved
 
@@ -1220,24 +1205,16 @@ assert(sizeof(spdk_nvme_fw_commit) == 4, "Incorrect size")
 template spdk_nvme_cpl_is_error*(cpl: untyped): untyped =
   ((cpl).status.sc != 0 or (cpl).status.sct != 0)
 
-## * Enable protection information checking of the Logical Block Reference Tag field
+const
+  SPDK_NVME_IO_FLAGS_PRCHK_REFTAG* = (1 shl 26) ## * Enable protection information checking of the Logical Block Reference Tag field
 
 const
-  SPDK_NVME_IO_FLAGS_PRCHK_REFTAG* = (1 shl 26)
-
-## * Enable protection information checking of the Application Tag field
+  SPDK_NVME_IO_FLAGS_PRCHK_APPTAG* = (1 shl 27) ## * Enable protection information checking of the Application Tag field
 
 const
-  SPDK_NVME_IO_FLAGS_PRCHK_APPTAG* = (1 shl 27)
-
-## * Enable protection information checking of the Guard field
+  SPDK_NVME_IO_FLAGS_PRCHK_GUARD* = (1 shl 28) ## * Enable protection information checking of the Guard field
 
 const
-  SPDK_NVME_IO_FLAGS_PRCHK_GUARD* = (1 shl 28)
-
-## * The protection information is stripped or inserted when set this bit
-
-const
-  SPDK_NVME_IO_FLAGS_PRACT* = (1 shl 29)
+  SPDK_NVME_IO_FLAGS_PRACT* = (1 shl 29) ## * The protection information is stripped or inserted when set this bit
   SPDK_NVME_IO_FLAGS_FORCE_UNIT_ACCESS* = (1 shl 30)
   SPDK_NVME_IO_FLAGS_LIMITED_RETRY* = (1 shl 31)

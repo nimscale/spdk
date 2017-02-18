@@ -62,19 +62,17 @@ type
 
   spdk_jsonrpc_server_conn* = object
 
-
-## *
-##  User callback to handle a single JSON-RPC request.
-##
-##  The user should respond by calling one of spdk_jsonrpc_begin_result() or
-##   spdk_jsonrpc_send_error_response().
-##
-
 type
   spdk_jsonrpc_handle_request_fn* = proc (conn: ptr spdk_jsonrpc_server_conn;
                                        `method`: ptr spdk_json_val;
                                        params: ptr spdk_json_val;
                                        id: ptr spdk_json_val) {.cdecl.}
+    ## *
+    ##  User callback to handle a single JSON-RPC request.
+    ##
+    ##  The user should respond by calling one of spdk_jsonrpc_begin_result() or
+    ##   spdk_jsonrpc_send_error_response().
+    ##
 
 proc spdk_jsonrpc_server_listen*(listen_addr: ptr sockaddr; addrlen: uint32; # socklen_t --> uint32
                                 handle_request: spdk_jsonrpc_handle_request_fn): ptr spdk_jsonrpc_server {.

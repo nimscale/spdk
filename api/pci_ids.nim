@@ -10,14 +10,14 @@ else:
     libspdk* = "libspdk.so"
 ## -
 ##    BSD LICENSE
-## 
+##
 ##    Copyright (c) Intel Corporation.
 ##    All rights reserved.
-## 
+##
 ##    Redistribution and use in source and binary forms, with or without
 ##    modification, are permitted provided that the following conditions
 ##    are met:
-## 
+##
 ##      * Redistributions of source code must retain the above copyright
 ##        notice, this list of conditions and the following disclaimer.
 ##      * Redistributions in binary form must reproduce the above copyright
@@ -27,7 +27,7 @@ else:
 ##      * Neither the name of Intel Corporation nor the names of its
 ##        contributors may be used to endorse or promote products derived
 ##        from this software without specific prior written permission.
-## 
+##
 ##    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 ##    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
 ##    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -39,21 +39,20 @@ else:
 ##    THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 ##    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 ##    OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-## 
+##
 ## * \file
 ##  PCI device ID list
-## 
+##
 
 const
   SPDK_PCI_VID_INTEL* = 0x00008086
 
-## *
-##  PCI class code for NVMe devices.
-## 
-##  Base class code 01h: mass storage
-##  Subclass code 08h: non-volatile memory
-##  Programming interface 02h: NVM Express
-## 
 
 const
-  SPDK_PCI_CLASS_NVME* = 0x00010802
+  SPDK_PCI_CLASS_NVME* = 0x00010802 ## *
+                                    ##  PCI class code for NVMe devices.
+                                    ##
+                                    ##  Base class code 01h: mass storage
+                                    ##  Subclass code 08h: non-volatile memory
+                                    ##  Programming interface 02h: NVM Express
+                                    ##

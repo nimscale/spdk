@@ -51,18 +51,14 @@ const
   ISCSI_DIGEST_LEN* = 4
   ISCSI_ALIGNMENT* = 4
 
-## * support version - RFC3720(10.12.4)
-
 const
-  ISCSI_VERSION* = 0x00000000
+  ISCSI_VERSION* = 0x00000000 ## * support version - RFC3720(10.12.4)
 
 template ISCSI_ALIGN*(SIZE: untyped): untyped =
   (((SIZE) + (ISCSI_ALIGNMENT - 1)) and not (ISCSI_ALIGNMENT - 1))
 
-## * for authentication key (non encoded 1024bytes) RFC3720(5.1/11.1.4)
-
 const
-  ISCSI_TEXT_MAX_VAL_LEN* = 8192
+  ISCSI_TEXT_MAX_VAL_LEN* = 8192  ## * for authentication key (non encoded 1024bytes) RFC3720(5.1/11.1.4)
 
 ## *
 ##  RFC 3720 5.1
@@ -437,10 +433,9 @@ type
     res4*: array[12, uint8]
 
 
-##  generic flags
-
 const
-  ISCSI_FLAG_FINAL* = 0x00000080
+  ISCSI_FLAG_FINAL* = 0x00000080 ##  generic flags
+
 
 ##  login flags
 

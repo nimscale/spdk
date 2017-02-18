@@ -334,10 +334,10 @@ type
 const
   SPDK_SPC_VPD_DESIG_PIV* = 0x00000080
 
-##  designation descriptor
 
 type
-  spdk_scsi_desig_desc* = object
+  spdk_scsi_desig_desc* = object ##  designation descriptor
+
     code_set* {.bitsize: 4.}: uint8
     protocol_id* {.bitsize: 4.}: uint8
     `type`* {.bitsize: 4.}: uint8
@@ -350,20 +350,17 @@ type
 
 
 assert(sizeof(spdk_scsi_desig_desc) == 4, "Invalid size")
-##  mode page policy descriptor
 
 type
-  spdk_scsi_mpage_policy_desc* = object
+  spdk_scsi_mpage_policy_desc* = object ##  mode page policy descriptor
     page_code*: uint8
     sub_page_code*: uint8
     policy*: uint8
     reserved*: uint8
 
 
-##  target port descriptor
-
 type
-  spdk_scsi_tgt_port_desc* = object
+  spdk_scsi_tgt_port_desc* = object ##  target port descriptor
     code_set*: uint8
     desig_type*: uint8
     reserved*: uint8
@@ -371,10 +368,8 @@ type
     designator*: ptr uint8
 
 
-##  SCSI port designation descriptor
-
 type
-  spdk_scsi_port_desc* = object
+  spdk_scsi_port_desc* = object ##  SCSI port designation descriptor
     reserved*: uint16
     rel_port_id*: uint16
     reserved2*: uint16
@@ -385,10 +380,8 @@ type
     tgt_desc*: ptr uint8
 
 
-##  SCSI UNMAP block descriptor
-
 type
-  spdk_scsi_unmap_bdesc* = object
+  spdk_scsi_unmap_bdesc* = object ##  SCSI UNMAP block descriptor
     lba*: uint64               ##  UNMAP LOGICAL BLOCK ADDRESS
     ##  NUMBER OF LOGICAL BLOCKS
     block_count*: uint32       ##  RESERVED

@@ -47,132 +47,125 @@ else:
 import
   pci
 
-## *
-##  Opaque handle for a single I/OAT channel returned by \ref spdk_ioat_probe().
-##
-
 type
   spdk_ioat_chan* = object
+    ## *
+    ##  Opaque handle for a single I/OAT channel returned by \ref spdk_ioat_probe().
+    ##
 
-
-## *
-##  Signature for callback function invoked when a request is completed.
-##
-##  \param arg User-specified opaque value corresponding to cb_arg from the request submission.
-##
 
 type
   spdk_ioat_req_cb* = proc (arg: pointer) {.cdecl.}
-
-## *
-##  Callback for spdk_ioat_probe() enumeration.
-##
-##  \param cb_ctx User-specified opaque value corresponding to cb_ctx from spdk_ioat_probe().
-##  \param pci_dev PCI device that is being probed.
-##
-##  \return true to attach to this device.
-##
+    ## *
+    ##  Signature for callback function invoked when a request is completed.
+    ##
+    ##  \param arg User-specified opaque value corresponding to cb_arg from the request submission.
+    ##
 
 type
   spdk_ioat_probe_cb* = proc (cb_ctx: pointer; pci_dev: ptr spdk_pci_device): bool {.
       cdecl.}
-
-## *
-##  Callback for spdk_ioat_probe() to report a device that has been attached to the userspace I/OAT driver.
-##
-##  \param cb_ctx User-specified opaque value corresponding to cb_ctx from spdk_ioat_probe().
-##  \param pci_dev PCI device that was attached to the driver.
-##  \param ioat I/OAT channel that was attached to the driver.
-##
+    ## *
+    ##  Callback for spdk_ioat_probe() enumeration.
+    ##
+    ##  \param cb_ctx User-specified opaque value corresponding to cb_ctx from spdk_ioat_probe().
+    ##  \param pci_dev PCI device that is being probed.
+    ##
+    ##  \return true to attach to this device.
+    ##
 
 type
   spdk_ioat_attach_cb* = proc (cb_ctx: pointer; pci_dev: ptr spdk_pci_device;
                             ioat: ptr spdk_ioat_chan) {.cdecl.}
-
-## *
-##  \brief Enumerate the I/OAT devices attached to the system and attach the userspace I/OAT driver
-##  to them if desired.
-##
-##  \param cb_ctx Opaque value which will be passed back in cb_ctx parameter of the callbacks.
-##  \param probe_cb will be called once per I/OAT device found in the system.
-##  \param attach_cb will be called for devices for which probe_cb returned true once the I/OAT
-##  controller has been attached to the userspace driver.
-##
-##  If called more than once, only devices that are not already attached to the SPDK I/OAT driver
-##  will be reported.
-##
-##  To stop using the the controller and release its associated resources,
-##  call \ref spdk_ioat_detach with the ioat_channel instance returned by this function.
-##
+    ## *
+    ##  Callback for spdk_ioat_probe() to report a device that has been attached to the userspace I/OAT driver.
+    ##
+    ##  \param cb_ctx User-specified opaque value corresponding to cb_ctx from spdk_ioat_probe().
+    ##  \param pci_dev PCI device that was attached to the driver.
+    ##  \param ioat I/OAT channel that was attached to the driver.
+    ##
 
 proc spdk_ioat_probe*(cb_ctx: pointer; probe_cb: spdk_ioat_probe_cb;
                      attach_cb: spdk_ioat_attach_cb): cint {.cdecl,
     importc: "spdk_ioat_probe", dynlib: libspdk.}
-## *
-##  Detaches specified device returned by \ref spdk_ioat_probe() from the I/OAT driver.
-##
-##  \param ioat I/OAT channel to detach from the driver.
-##
+    ## *
+    ##  \brief Enumerate the I/OAT devices attached to the system and attach the userspace I/OAT driver
+    ##  to them if desired.
+    ##
+    ##  \param cb_ctx Opaque value which will be passed back in cb_ctx parameter of the callbacks.
+    ##  \param probe_cb will be called once per I/OAT device found in the system.
+    ##  \param attach_cb will be called for devices for which probe_cb returned true once the I/OAT
+    ##  controller has been attached to the userspace driver.
+    ##
+    ##  If called more than once, only devices that are not already attached to the SPDK I/OAT driver
+    ##  will be reported.
+    ##
+    ##  To stop using the the controller and release its associated resources,
+    ##  call \ref spdk_ioat_detach with the ioat_channel instance returned by this function.
+    ##
 
 proc spdk_ioat_detach*(ioat: ptr spdk_ioat_chan): cint {.cdecl,
     importc: "spdk_ioat_detach", dynlib: libspdk.}
-## *
-##  Submit a DMA engine memory copy request.
-##
-##  \param chan I/OAT channel to submit request.
-##  \param cb_arg Opaque value which will be passed back as the arg parameter in the completion callback.
-##  \param cb_fn Callback function which will be called when the request is complete.
-##  \param dst Destination virtual address.
-##  \param src Source virtual address.
-##  \param nbytes Number of bytes to copy.
-##
+    ## *
+    ##  Detaches specified device returned by \ref spdk_ioat_probe() from the I/OAT driver.
+    ##
+    ##  \param ioat I/OAT channel to detach from the driver.
+    ##
 
 proc spdk_ioat_submit_copy*(chan: ptr spdk_ioat_chan; cb_arg: pointer;
                            cb_fn: spdk_ioat_req_cb; dst: pointer; src: pointer;
                            nbytes: uint64): int64 {.cdecl,
     importc: "spdk_ioat_submit_copy", dynlib: libspdk.}
-## *
-##  Submit a DMA engine memory fill request.
-##
-##  \param chan I/OAT channel to submit request.
-##  \param cb_arg Opaque value which will be passed back as the cb_arg parameter in the completion callback.
-##  \param cb_fn Callback function which will be called when the request is complete.
-##  \param dst Destination virtual address.
-##  \param fill_pattern Repeating eight-byte pattern to use for memory fill.
-##  \param nbytes Number of bytes to fill.
-##
+    ## *
+    ##  Submit a DMA engine memory copy request.
+    ##
+    ##  \param chan I/OAT channel to submit request.
+    ##  \param cb_arg Opaque value which will be passed back as the arg parameter in the completion callback.
+    ##  \param cb_fn Callback function which will be called when the request is complete.
+    ##  \param dst Destination virtual address.
+    ##  \param src Source virtual address.
+    ##  \param nbytes Number of bytes to copy.
+    ##
 
 proc spdk_ioat_submit_fill*(chan: ptr spdk_ioat_chan; cb_arg: pointer;
                            cb_fn: spdk_ioat_req_cb; dst: pointer;
                            fill_pattern: uint64; nbytes: uint64): int64 {.cdecl,
     importc: "spdk_ioat_submit_fill", dynlib: libspdk.}
-## *
-##  Check for completed requests on an I/OAT channel.
-##
-##  \param chan I/OAT channel to check for completions.
-##
-##  \returns 0 on success or negative if something went wrong.
-##
+    ## *
+    ##  Submit a DMA engine memory fill request.
+    ##
+    ##  \param chan I/OAT channel to submit request.
+    ##  \param cb_arg Opaque value which will be passed back as the cb_arg parameter in the completion callback.
+    ##  \param cb_fn Callback function which will be called when the request is complete.
+    ##  \param dst Destination virtual address.
+    ##  \param fill_pattern Repeating eight-byte pattern to use for memory fill.
+    ##  \param nbytes Number of bytes to fill.
+    ##
 
 proc spdk_ioat_process_events*(chan: ptr spdk_ioat_chan): cint {.cdecl,
     importc: "spdk_ioat_process_events", dynlib: libspdk.}
-## *
-##  DMA engine capability flags
-##
+    ## *
+    ##  Check for completed requests on an I/OAT channel.
+    ##
+    ##  \param chan I/OAT channel to check for completions.
+    ##
+    ##  \returns 0 on success or negative if something went wrong.
+    ##
 
 type
   spdk_ioat_dma_capability_flags* {.size: sizeof(cint).} = enum
+    ## *
+    ##  DMA engine capability flags
+    ##
     SPDK_IOAT_ENGINE_COPY_SUPPORTED = 0x00000001, ## *< The memory copy is supported
     SPDK_IOAT_ENGINE_FILL_SUPPORTED = 0x00000002 ## *< The memory fill is supported
 
-
-## *
-##  Get the DMA engine capabilities.
-##
-##  \param chan I/OAT channel to query.
-##
-##  \return A combination of flags from \ref spdk_ioat_dma_capability_flags.
-##
-
 proc spdk_ioat_get_dma_capabilities*(chan: ptr spdk_ioat_chan): uint32 {.cdecl,
     importc: "spdk_ioat_get_dma_capabilities", dynlib: libspdk.}
+    ## *
+    ##  Get the DMA engine capabilities.
+    ##
+    ##  \param chan I/OAT channel to query.
+    ##
+    ##  \return A combination of flags from \ref spdk_ioat_dma_capability_flags.
+    ##

@@ -61,10 +61,8 @@ type
     arg1*: uint64
 
 
-##  If type changes from a uint8_t, change this value.
-
 const
-  SPDK_TRACE_MAX_OWNER* = (UCHAR_MAX + 1)
+   SPDK_TRACE_MAX_OWNER* = (UCHAR_MAX + 1) ## * If type changes from a uint8_t, change this value.
 
 type
   spdk_trace_owner* = object
@@ -72,10 +70,8 @@ type
     id_prefix*: char
 
 
-##  If type changes from a uint8_t, change this value.
-
 const
-  SPDK_TRACE_MAX_OBJECT* = (UCHAR_MAX + 1)
+  SPDK_TRACE_MAX_OBJECT* = (UCHAR_MAX + 1) ## *  If type changes from a uint8_t, change this value.
 
 type
   spdk_trace_object* = object
@@ -111,10 +107,10 @@ type
     ##   display in a human-readable format.
     ##
     entries*: array[SPDK_TRACE_SIZE, spdk_trace_entry] ## *
-                                                    ##  Running count of number of occurrences of each tracepoint on this
-                                                    ##   lcore.  Debug tools can use this to easily count tracepoints such as
-                                                    ##   number of SCSI tasks completed or PDUs read.
-                                                    ##
+                                                       ##  Running count of number of occurrences of each tracepoint on this
+                                                       ##   lcore.  Debug tools can use this to easily count tracepoints such as
+                                                       ##   number of SCSI tasks completed or PDUs read.
+                                                       ##
     tpoint_count*: array[SPDK_TRACE_MAX_TPOINT_ID, uint64] ## * Index to next spdk_trace_entry to fill in the circular buffer.
     next_entry*: uint32
 
@@ -135,28 +131,32 @@ type
 proc spdk_trace_record*(tpoint_id: uint16; poller_id: uint16; size: uint32;
                        object_id: uint64; arg1: uint64) {.cdecl,
     importc: "spdk_trace_record", dynlib: libspdk.}
-## * Returns the current tpoint mask.
 
 proc spdk_trace_get_tpoint_mask*(group_id: uint32): uint64 {.cdecl,
     importc: "spdk_trace_get_tpoint_mask", dynlib: libspdk.}
-## * Adds the specified tpoints to the current tpoint mask for the given tpoint group.
+  ## * Returns the current tpoint mask.
+
 
 proc spdk_trace_set_tpoints*(group_id: uint32; tpoint_mask: uint64) {.cdecl,
     importc: "spdk_trace_set_tpoints", dynlib: libspdk.}
-## * Clears the specified tpoints from the current tpoint mask for the given tpoint group.
+  ## * Adds the specified tpoints to the current tpoint mask for the given tpoint group.
+
 
 proc spdk_trace_clear_tpoints*(group_id: uint32; tpoint_mask: uint64) {.cdecl,
     importc: "spdk_trace_clear_tpoints", dynlib: libspdk.}
-## * Returns a mask of all tracepoint groups which have at least one tracepoint enabled.
+  ## * Clears the specified tpoints from the current tpoint mask for the given tpoint group.
 
 proc spdk_trace_get_tpoint_group_mask*(): uint64 {.cdecl,
     importc: "spdk_trace_get_tpoint_group_mask", dynlib: libspdk.}
-## * For each tpoint group specified in the group mask, enable all of its tpoints.
+  ## * Returns a mask of all tracepoint groups which have at least one tracepoint enabled.
 
 proc spdk_trace_set_tpoint_group_mask*(tpoint_group_mask: uint64) {.cdecl,
     importc: "spdk_trace_set_tpoint_group_mask", dynlib: libspdk.}
+  ## * For each tpoint group specified in the group mask, enable all of its tpoints.
+
 proc spdk_trace_init*(shm_name: cstring) {.cdecl, importc: "spdk_trace_init",
                                         dynlib: libspdk.}
+
 proc spdk_trace_cleanup*() {.cdecl, importc: "spdk_trace_cleanup", dynlib: libspdk.}
 const
   OWNER_NONE* = 0
@@ -180,7 +180,7 @@ type
 
 proc spdk_trace_add_register_fn*(reg_fn: ptr spdk_trace_register_fn) {.cdecl,
     importc: "spdk_trace_add_register_fn", dynlib: libspdk.}
-##  metaprograming : TBD: this needed to be done manually in the nim code...
+##   metaprograming : TBD: this needed to be done manually in the nim code...
 ## #define SPDK_TRACE_REGISTER_FN(fn) 				\
 ## 	static void fn(void);					\
 ## 	struct spdk_trace_register_fn reg_ ## fn = {		\
