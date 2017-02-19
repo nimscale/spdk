@@ -52,9 +52,9 @@ Initialization complete.
 ```
 # Documentation:
 
- General library documentation: [SPDK Doc](http://www.spdk.io/doc/)
- API reference: [TBD]
+ General library documentation: [SPDK Doc](http://www.spdk.io/doc/) </br>
+ API reference: [API](https://rawgit.com/nimscale/spdk/master/doc/spdk/index.html)</br>
  
  
  </br>
-> <h3>Note! Test envoronment is based on Ubuntu 16.04.</h3></br>
+> <h3>Note! SPDK officially works only on Linux. Current code has been tested on Ubuntu 16.04.</h3></br>
