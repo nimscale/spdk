@@ -27,11 +27,11 @@ sh Build_example.sh
 </br>
   Prepare SPDK environment:</br>
 ```
-sudo ./libspdk/scripts/setup.sh</br>
+sudo ./libspdk/scripts/setup.sh
 ```
   Execute the test application:</br>
 ```
-sudo ./examples/hello_world/hello_world</br>
+sudo ./examples/hello_world/hello_world
 ```
   As result of successful execution you'll get something like :
 
