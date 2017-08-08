@@ -12,9 +12,9 @@
 
 <h4> Installation process: </h4> 
 ```
-git clone https://github.com/nimscale/spdk.git
-cd spdk
-nim e build.nims
+git clone https://github.com/nimscale/spdk.git</br>
+cd spdk</br>
+nim e build.nims</br>
 ```
 </br>
 
