@@ -11,7 +11,7 @@
   Please note! There are list of dependencies and extra libraries required to be installed for SPDK correct work. It is covered in builds.nim script. It execution will require ```sudo``` privileges. 
 
 <h4> Installation process: </h4> 
-```
+```</br>
 git clone https://github.com/nimscale/spdk.git</br>
 cd spdk</br>
 nim e build.nims</br>
